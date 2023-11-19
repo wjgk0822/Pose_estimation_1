@@ -26,6 +26,19 @@ class poseDetector():
 
 
         return img
+
+    def findPosition(self,img,draw=True):
+        lmlist=[]
+        if self.results.pose_landmarks:
+            for id,lm in enumerate(self.results.pose_landmarks.landmark):
+                h,w,c=img.shape
+                cx,cy=int(lm.x*w),int(lm.y*h)
+                lmlist.append([id,cx,cy])
+                if draw:
+                    cv2.circle(img,(cx,cy),5,(255,0,255),cv2.FILLED)
+
+        return lmlist
+
 def main():
 
     cap=cv2.VideoCapture("bicep.mp4")
@@ -34,6 +47,8 @@ def main():
         ret,frame=cap.read()
         if ret:
             frame=detector.findPose(frame)
+            lmlist=detector.findPosition(frame,draw=True)
+            print(lmlist)
             cv2.imshow("video",frame)
             if cv2.waitKey(1) & 0xFF==ord('1'):
                 break
