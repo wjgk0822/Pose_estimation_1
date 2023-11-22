@@ -17,8 +17,8 @@ while True:
         if len(lmList)!=0:
             angle=detector.findAngle(frame, 11, 13, 15, draw=True)
             #print(angle)
-            per=np.interp(angle, (190,300), (0,100))
-            bar = np.interp(angle, (190, 300), (650, 100))
+            per=np.interp(angle, (200,280), (0,100))
+            bar = np.interp(angle, (200, 280), (650, 100))
             color=(255, 100, 100)
             if per == 100:
                 color=(100, 255, 100)
@@ -31,22 +31,22 @@ while True:
                     count+=0.5
                     dir=0
 
-            # Displaying Curl Count
-            # pos = [30, 450]
-            # ox, oy = pos[0], pos[1]
-            # offset = 10
-            # text = str(int(count))
-            #
-            # (w, h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_PLAIN, 11, 11)
-            # x1, y1, x2, y2 = ox - offset, oy + offset, ox + w + offset, oy - h - offset
-            # cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), cv2.FILLED)
-            # cv2.putText(frame, text, (ox, oy), cv2.FONT_HERSHEY_PLAIN, 10, (255, 255, 255), 6)
-            #
-            # #Displating the Bar Count
-            #
-            # cv2.rectangle(frame, (1100, 100), (1175, 650),color, 3)
-            # cv2.rectangle(frame, (1100, int(bar)), (1175, 650), color, cv2.FILLED)
-            # cv2.putText(frame, f'{int(per)}%', (1100, 75), cv2.FONT_HERSHEY_PLAIN, 4, color, 4)
+            #Displaying Curl Count
+            pos = [30, 450]
+            ox, oy = pos[0], pos[1]
+            offset = 10
+            text = str(int(count))
+
+            (w, h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_PLAIN, 11, 11)
+            x1, y1, x2, y2 = ox - offset, oy + offset, ox + w + offset, oy - h - offset
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), cv2.FILLED)
+            cv2.putText(frame, text, (ox, oy), cv2.FONT_HERSHEY_PLAIN, 10, (255, 255, 255), 6)
+
+            #Displating the Bar Count
+
+            cv2.rectangle(frame, (1100, 100), (1175, 650),color, 3)
+            cv2.rectangle(frame, (1100, int(bar)), (1175, 650), color, cv2.FILLED)
+            cv2.putText(frame, f'{int(per)}%', (1100, 75), cv2.FONT_HERSHEY_PLAIN, 4, color, 4)
 
 
             # Displaying the FPS
