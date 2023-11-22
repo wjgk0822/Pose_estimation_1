@@ -5,24 +5,67 @@ import poseestimationmodule as pm
 
 cap=cv2.VideoCapture("bicep.mp4")
 detector=pm.poseDetector()
-
+dir = 0
+count=0
+ptime = 0
 while True:
-    ret,frame=cap.read()
+    ret, frame = cap.read()
     if ret:
-        frame=detector.findPose(frame)
-        #print(lmlist)
+        frame = detector.findPose(frame)
+        lmList = detector.findPosition(frame, draw=False)
+        #print(lmList)
+        if len(lmList)!=0:
+            angle=detector.findAngle(frame, 12, 14, 16, draw=True)
+            #print(angle)
+            per=np.interp(angle, (190,300), (0,100))
+            bar = np.interp(angle, (190, 300), (650, 100))
+            color=(255, 100, 100)
+            if per == 100:
+                color=(100, 255, 100)
+                if dir==0:
+                    count+=0.5
+                    dir=1
+            if per == 0:
+                color=(100, 100, 255)
+                if dir == 1:
+                    count+=0.5
+                    dir=0
 
-        lmlist=detector.findPosition(frame,draw=False)
-        print(lmlist)
+            # Displaying Curl Count
+            pos = [30, 450]
+            ox, oy = pos[0], pos[1]
+            offset = 10
+            text = str(int(count))
 
-        detector.findAngle(frame,11,13,15,draw=True)
+            (w, h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_PLAIN, 11, 11)
+            x1, y1, x2, y2 = ox - offset, oy + offset, ox + w + offset, oy - h - offset
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), cv2.FILLED)
+            cv2.putText(frame, text, (ox, oy), cv2.FONT_HERSHEY_PLAIN, 10, (255, 255, 255), 6)
+
+            #Displating the Bar Count
+
+            cv2.rectangle(frame, (1100, 100), (1175, 650),color, 3)
+            cv2.rectangle(frame, (1100, int(bar)), (1175, 650), color, cv2.FILLED)
+            cv2.putText(frame, f'{int(per)}%', (1100, 75), cv2.FONT_HERSHEY_PLAIN, 4, color, 4)
 
 
+            # Displaying the FPS
+            ctime = time.time()
+            fps = 1/(ctime - ptime)
+            ptime = ctime
+            pos = [30, 60]
+            ox, oy = pos[0], pos[1]
+            offset=10
+            text = "FPS: " + str(int(fps))
 
-        cv2.imshow("Video",frame)
+            (w, h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_PLAIN, 3,3)
+            x1,y1, x2, y2 = ox-offset, oy+offset, ox+w+offset, oy-h-offset
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), cv2.FILLED)
+            cv2.putText(frame, text, (ox, oy), cv2.FONT_HERSHEY_PLAIN, 3, (255, 255, 255), 3)
+
+        cv2.imshow("Video", frame)
         if cv2.waitKey(1) & 0xFF==ord('1'):
             break
-
     else:
         break
 
